@@ -13,7 +13,7 @@
 
 ---
 
-[Features](#-key-features) • [System Architecture](#-system-architecture) • [Project Structure](#-project-structure) • [Installation & Setup](#%EF%B8%8F-installation-and-setup) • [Security & Guardrails](#-security--enterprise-guardrails) • [Reports](#-reporting-engine)
+[Features](#-key-features) • [Screenshots](#-screenshots) • [System Architecture](#-system-architecture) • [Project Structure](#-project-structure) • [Installation & Setup](#%EF%B8%8F-installation-and-setup) • [Security & Guardrails](#-security--enterprise-guardrails) • [Reports](#-reporting-engine)
 
 </div>
 
@@ -28,6 +28,23 @@
 * **📄 Multi-Format Reporting Engine**: One-click generation of comprehensive cyber audit reports. Standardized **CSV** export for SIEM integration and highly structured **PDF reports via ReportLab**, including threat level distribution charts and dedicated analysis sections for security experts.
 
 ---
+
+## 📸 Screenshots
+
+<div align="center">
+  <img src="assets/login.png" alt="Login" width="30%">
+  <img src="assets/dashboard.png" alt="Dashboard" width="60%">
+</div>
+<br>
+<div align="center">
+  <img src="assets/findings.png" alt="Vulnerability Findings" width="60%">
+  <img src="assets/ai-analysis.png" alt="AI Analysis" width="60%">
+</div>
+<br>
+<div align="center">
+  <img src="assets/history.png" alt="Scan History" width="60%">
+</div>
+
 
 ## 📐 System Architecture
 
