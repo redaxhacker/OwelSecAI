@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="OwelSec AI — AI-powered vulnerability scanning platform. Red/Blue team cybersecurity dashboard.">
+    <title>OwelSec AI</title>
+    <link rel="icon" type="image/png" href="logo/favicon.png">
+    <link rel="apple-touch-icon" href="logo/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+
+<body>
+    <canvas id="matrix-canvas"></canvas>
+
+    <!-- ═══ LOGIN OVERLAY ═══ -->
+    <div class="login-overlay" id="loginOverlay" style="display:none">
+        <canvas id="matrix-canvas-login"
+            style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:.12;pointer-events:none"></canvas>
+        <div class="login-box bracket-box" style="z-index:2">
+            <div class="brand-logo-row"><img src="logo/favicon.png" alt="OwelSec AI Logo" class="brand-logo">
+                <h2><span class="glitch-text" data-text="OwelSec AI">OwelSec AI</span></h2>
+            </div>
+            <div class="login-sub">▶ AUTHORIZED PERSONNEL ONLY</div>
+            <input type="text" id="loginUser" placeholder="OPERATOR_ID" autocomplete="username">
+            <input type="password" id="loginPass" placeholder="ACCESS_KEY" autocomplete="current-password">
+            <button class="login-btn" onclick="doLogin()">AUTHENTICATE</button>
+            <div class="login-error" id="loginError"></div>
+            <div class="login-footer">OwelSec AI v1.0 — ENCRYPTED CHANNEL — TLS 1.3</div>
+        </div>
+    </div>
+
+    <!-- ═══ MAIN APP LAYOUT ═══ -->
+    <div class="layout" id="appLayout" style="display:none">
+
+        <!-- ── Sidebar ── -->
+        <nav class="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-logo-row"><img src="logo/favicon.png" alt="OwelSec AI Logo" class="brand-logo">
+                    <h2><span class="glitch-text" data-text="OwelSec AI">OwelSec AI</span></h2>
+                </div>
+                <div class="brand-sub">▶ AI SCANNER v2.0</div>
+            </div>
+            <div class="sidebar-nav">
+                <div class="nav-item active" data-tab="dashboard">
+                    <span class="nav-icon material-icons" style="font-size:18px">radar</span>
+                    <span>DASHBOARD</span>
+                </div>
+                <div class="nav-item" data-tab="findings">
+                    <span class="nav-icon material-icons" style="font-size:18px">visibility</span>
+                    <span>FINDINGS</span>
+                </div>
+                <div class="nav-item" data-tab="analysis">
+                    <span class="nav-icon material-icons" style="font-size:18px">psychology</span>
+                    <span>AI_ANALYSIS</span>
+                </div>
+                <div class="nav-item" data-tab="history">
+                    <span class="nav-icon material-icons" style="font-size:18px">history</span>
+                    <span>HISTORY</span>
+                </div>
+            </div>
+            <div class="nav-item logout" onclick="doLogout()">
+                <span class="nav-icon material-icons" style="font-size:18px">power_settings_new</span>
+                <span>LOGOUT</span>
+            </div>
+            <div class="sidebar-footer">
+                OwelSec AI © 2026<br>AUTHORIZED USE ONLY
+            </div>
+        </nav>
+
+        <!-- ── Main Content ── -->
+        <div class="main">
+            <!-- Top Status Bar -->
+            <div class="topbar">
+                <div><span class="dot"></span>OwelSec AI PLATFORM — ONLINE</div>
+                <div>CLEARANCE: <span style="color:var(--blue-bright)">OPERATOR</span></div>
+                <div id="live-time">--:--:--</div>
+            </div>
+
+            <div class="content-area">
+
+                <!-- ═══ TAB: DASHBOARD ═══ -->
+                <div class="tab-content active" id="tab-dashboard">
+                    <div class="page-header">
+                        <h1><span class="glitch-text" data-text="TARGET SCANNER">TARGET SCANNER</span></h1>
+                        <div class="sub">MODULE: PENTEST RECON &nbsp;|&nbsp; ENGINE: <span>AI AGENT</span> &nbsp;|&nbsp;
+                            PROTOCOL: ACTIVE</div>
+                    </div>
+
+                    <hr class="divider">
+
+                    <!-- Scan Panel -->
+                    <div class="scan-panel bracket-box" id="scan-panel">
+                        <div class="scan-line" id="scan-line"></div>
+                        <div class="panel-title">▶ INITIATE TARGET SCAN</div>
+                        <div class="input-row">
+                            <div class="input-prefix">TARGET://</div>
+                            <input class="target-input" id="target" placeholder="https://example.com" autocomplete="off"
+                                spellcheck="false">
+                            <button class="scan-btn" id="scanBtn" onclick="startScan()">EXECUTE</button>
+                        </div>
+                        <div class="progress-wrap" id="progress-wrap">
+                            <div class="progress-track">
+                                <div class="progress-bar" id="progress-bar"></div>
+                            </div>
+                            <div class="progress-label"><span id="progress-text">INITIALIZING...</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="status-msg" id="statusMsg">
+                        <div class="spinner" id="statusSpinner"></div>
+                        <span id="statusText"></span>
+                    </div>
+
+                    <!-- Meta -->
+                    <div class="meta-bar" id="metaBar" style="display:none">
+                        <span id="metaTarget"></span>
+                        <span id="metaScanId"></span>
+                        <span id="metaState"></span>
+                    </div>
+
+                    <!-- Inline Terminal Result -->
+                    <div class="result-box" id="resultBox">
+                        <div class="result-header">
+                            <span class="rtitle">TERMINAL OUTPUT</span>
+                            <div class="rcontrols"><span class="c1"></span><span class="c2"></span><span
+                                    class="c3"></span></div>
+                        </div>
+                        <div class="result-body">
+                            <div class="empty-state">root@owelsec:~$ awaiting target input <span class="cursor"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══ TAB: FINDINGS ═══ -->
+                <div class="tab-content" id="tab-findings">
+                    <div class="page-header">
+                        <h1><span class="glitch-text" data-text="ACTIVE FINDINGS">ACTIVE FINDINGS</span></h1>
+                        <div class="sub">VALIDATED VULNERABILITY REPORT</div>
+                    </div>
+                    <hr class="divider">
+                    <div class="empty-state" id="findingsEmpty">root@owelsec:~$ RUN A SCAN TO SEE FINDINGS <span
+                            class="cursor"></span></div>
+                    <div id="findingsList"></div>
+                </div>
+
+                <!-- ═══ TAB: AI ANALYSIS ═══ -->
+                <div class="tab-content" id="tab-analysis">
+                    <div class="page-header">
+                        <h1><span class="glitch-text" data-text="AI ANALYSIS">AI ANALYSIS</span></h1>
+                        <div class="sub">LLAMA 3.3 70B — <span>THREAT INTELLIGENCE</span></div>
+                    </div>
+                    <hr class="divider">
+                    <div id="reportButtons" class="report-btns" style="display:none">
+                        <button class="btn-outline" onclick="downloadReport('csv')">⬇ DOWNLOAD CSV</button>
+                        <button class="btn-outline" onclick="downloadReport('pdf')">⬇ DOWNLOAD PDF</button>
+                    </div>
+                    <div id="analysisContent">
+                        <div class="empty-state">root@owelsec:~$ AI ANALYSIS PENDING <span class="cursor"></span></div>
+                    </div>
+                </div>
+
+                <!-- ═══ TAB: HISTORY ═══ -->
+                <div class="tab-content" id="tab-history">
+                    <div class="page-header">
+                        <h1><span class="glitch-text" data-text="SCAN HISTORY">SCAN HISTORY</span></h1>
+                        <div class="sub">DATABASE RECORDS — LAST 30 SCANS</div>
+                    </div>
+                    <hr class="divider">
+                    <div id="historyList">
+                        <div class="empty-state">LOADING... <span class="cursor"></span></div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="footer-bar">
+                    <div>OwelSec AI © 2026 — AUTHORIZED USE ONLY</div>
+                    <div>ENCRYPTION: TLS 1.3 &nbsp;|&nbsp; CHANNEL: SECURE</div>
+                    <div id="session-id">SESSION: --</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
